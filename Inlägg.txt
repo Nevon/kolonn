@@ -108,13 +108,12 @@
                         {% else %}
                         <img alt="" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2NjIpLCBxdWFsaXR5ID0gOTAK/9sAQwADAgIDAgIDAwMDBAMDBAUIBQUEBAUKBwcGCAwKDAwLCgsLDQ4SEA0OEQ4LCxAWEBETFBUVFQwPFxgWFBgSFBUU/9sAQwEDBAQFBAUJBQUJFA0LDRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU/8AAEQgAPAA8AwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8A+t8CjFJ+VH5UALgUYFavh3w1e+JrwwWiDavMkr8Ig9z/AEr0S1+DenrEBc31zJJjkxBUH5EGgDybAowK7/xF8JrmwgefTZzeooyYXXEmPbHB+nFcAQQcHg+lABgUYFJ+VH5UALn3oz70fjRzQB734F0iPR/DNkigCSZBNK3cswz+gwPwrfz71jeDdTTVfDOnzI2SsSxuPRlGD/LP41tc0AJn3rxX4o6RHpfiUywgJHdJ5xAHAbJDfyz+Ne1814z8WdTS98SJBG24WsQRiP7xJJH6igDis+9Gfej8aPx/SgA/Oj86MfWux+HPg1fEV611dqTYW5GV/wCej9dv07n8PWgDS+F1nr0E5ntowulyn959oJVX90759+ler/nSJGI0VFUKqjAVeABTsGgDM8Q/2odMlGkCL7WRgGY4wPbtn68V4BqVrdWd7NFexyx3QYlxL94k9/fPrX0lj61z3jLwjB4p05lwEvYwTDN3B/un2NAHgv50fnT54JLaaSGVGSSNirKeoI4IpmPrQAfhX0J4T0hdE8PWVqFw4jDSe7nk/qf0rwGxjWS9t1YZVpFBH419K4FACY9qMe1GKMUAGPajHtRjrRigDxv4s6Qtj4hjukXCXce44/vjg/pj864nHtXqnxmjU2WmPj5hI4B+oH+FeVgAigD/2Q==" alt="Generisk avatar" width="60" height="60">
                         {% endif %}
-                        <p><a href="{{ comment.url|default('#') }}">{{ comment.name|default('Anonym') }}</a>, <time datetime="{{ comment.date }}T{{ comment.time }}Z+01:00">{{ comment.date_time.strftime("%d ") ~ swedish_months[comment.date_time.month-1] ~ comment.date_time.strftime(" %Y,") ~ comment.date_time.strftime(" %H:%M") }}</time><p>
+                        <p><a href="{{ comment.url|default('#') }}">{{ comment.name|default('Anonym') }}</a>, <time datetime="{{ comment.date }}T{{ comment.time }}Z+01:00">{{ comment.date_time.strftime("%d ") ~ swedish_months[comment.date_time.month-1] ~ comment.date_time.strftime(" %Y,") ~ comment.date_time.strftime(" %H:%M") }}</time></p>
                         </div>
                         <p>{{ comment.body }}</p>
                     </li>
                     {% endfor %}
                 </ul>
-            </section>
 
             {% endif %}
             <div style="float: left" class="comment-form">
