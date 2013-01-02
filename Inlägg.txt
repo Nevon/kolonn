@@ -6,8 +6,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>{{ blog.title }} - {{ blog.description }}</title>
-    <meta name="description" content="">
+    <title>{{ blog.title }} - {{ entry.title }}</title>
+    <meta name="description" content="{{ blog.description }}">
     <meta name="viewport" content="width=device-width">
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.0.1/normalize.css">
@@ -18,8 +18,8 @@
     <link rel="alternate" href="{{ blog.blog_path }}index.rss" type="application/rss+xml" title="RSS">
 </head>
 <body>
-<!--[if lt IE 7]>
-<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<!--[if lt IE 8]>
+<p class="chromeframe">Du använder en <strong>utdaterad</strong> webbläsare. Var god <a href="http://browsehappy.com/">uppgradera din webbläsare</a> eller <a href="http://www.google.com/chromeframe/?redirect=true">aktivera Google Chrome Frame</a> för att uppleva en bättre webb.</p>
 <![endif]-->
 
 <header class="sidebar">
@@ -64,14 +64,17 @@
                 {% for link in linklist %}
                 <li><a href="{{ link.url }}" title="{{ link.description }}">{{ link.name }}</a></li>
                 {% endfor %}
-                <li><a href="http://blogg-design.se/gratis-bloggdesign-kolonn">Bloggdesign av Blogg-design.se</a></li>
+                <!-- Ta inte bort den här länken utan tillåtelse. -->
+                <li><a href="http://blogg-design.se/gratis-bloggdesign-blogg-se-kolonn">Bloggdesign av Blogg-design.se</a></li>
             </ul>
         </section>
     </nav>
     <section id="profile">
         <a href="http://profile.publishme.se/profile/view/{{ profile.id }}/">
+            <!-- PROFILBILD. Byt inte här, utan via Blogg.se:s profilinställningar istället. -->
             <img src="{{ blog.blog_path }}profile.jpg" alt="Min profilbild" class="avatar">
         </a>
+        <!-- Även detta ska ställas in i Blogg.se:s profilinställningar. -->
         <h1><a href="http://profile.publishme.se/profile/view/{{ profile.id }}/">{{ profile.name }}</a></h1>
         <p>{{ profile.description }}</p>
     </section>
@@ -274,7 +277,6 @@ $('#comments-area time').timeago();
 
 });
 </script>
-<script src="http://blogg-design.se/static/drm.php?url=gratis-bloggdesign-kolonn"></script>
 
 <img src="http://stats.blogg.se/?id={{ blog.site_id }}" border="0" width="0" height="0" alt="" />
 
