@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{{ blog.title }} - {{ blog.description }}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.0.1/normalize.css">
+    <link href='//fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic|PT+Sans+Narrow:700|PT+Serif:400,700,400italic,700italic' rel='stylesheet'>
+    <link rel="stylesheet" href="{{ blog.blog_path }}style.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    <link rel="alternate" href="{{ blog.blog_path }}index.rss" type="application/rss+xml" title="RSS">
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
+
+<header class="sidebar">
+    <hgroup>
+        <h1 id="blogname"><a href="{{ blog.url }}">{{ blog.title }}</a></h1>
+        <h2 id="tagline">{{ blog.description }}</h2>
+    </hgroup>
+    <nav>
+        {% if categories|length > 0 %}
+        <section id="categories" class="collapsible" data-indicator="+">
+            <h1>Kategorier</h1>
+            <ul>
+                {% for category in categories %}
+                <li><a href="{{ category.url }}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        {% set swedish_months = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"] %}
+        {% set archive_years = archive_months|groupby('year')|reverse %}
+        {% if archive_months|length > 0 %}
+        <section id="archive" class="collapsible" data-indicator="+">
+            <h1>Arkiv</h1>
+            <ol class="years">
+                {% for group in archive_years %}
+                <li>{{ group.grouper }}
+                    <ol class="months">
+                        {% for a in group.list|reverse %}
+                        <li><a href="{{ a.link }}">{{ swedish_months[a.month-1]|capitalize }}</a></li>
+                        {% endfor %}
+                    </ol>
+                </li>
+                {% endfor %}
+            </ol>
+        </section>
+        {% endif %}
+
+        <section id="links" class="collapsible" data-indicator="+">
+            <h1>Länkar</h1>
+            <ul>
+                {% for link in linklist %}
+                <li><a href="{{ link.url }}" title="{{ link.description }}">{{ link.name }}</a></li>
+                {% endfor %}
+                <li><a href="http://blogg-design.se/gratis-bloggdesign-kolonn">Bloggdesign av Blogg-design.se</a></li>
+            </ul>
+        </section>
+    </nav>
+    <section id="profile">
+        <a href="http://profile.publishme.se/profile/view/{{ profile.id }}/">
+            <img src="{{ blog.blog_path }}profile.jpg" alt="Min profilbild" class="avatar">
+        </a>
+        <h1><a href="http://profile.publishme.se/profile/view/{{ profile.id }}/">{{ profile.name }}</a></h1>
+        <p>{{ profile.description }}</p>
+    </section>
+</header>
+
+<div id="main" class="single">
+    <article class="post" id="post-{{ entry.id }}">
+        <div class="content">
+            <h1><a href="{{ entry.url }}">{{ entry.title }}</a></h1>
+            <span class="meta">Publicerat den <time datetime="{{ entry.date }}">{{ entry.date_time.strftime("%d ") ~ swedish_months[entry.date_time.month-1] ~ entry.date_time.strftime(" %Y") }}</time> i 
+                {% for category in entry.categories %}
+                <a href="{{ category.link }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}</span>
+                <div class="text">
+                    {{ entry.body }}
+                </div>
+            </div>
+        </article>
+
+        {% if entry.comment_enabled %}
+        <section id="comments-area">
+            {% if entry.comment_count != 0 %}
+            <ul class="comments">
+                <h1>Kommentarer</h1>
+
+                {% for comment in comments %}
+                <li class="comment">
+                    <div class="meta clearfix">
+                        {% if comment.avatar %}
+                        <img src="{{ comment.avatar }}" class="avatar" alt="Avatar tillhörande {{ comment.name|default('Anonym') }}" width="60" height="60">
+                        {% else %}
+                        <img alt="" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2NjIpLCBxdWFsaXR5ID0gOTAK/9sAQwADAgIDAgIDAwMDBAMDBAUIBQUEBAUKBwcGCAwKDAwLCgsLDQ4SEA0OEQ4LCxAWEBETFBUVFQwPFxgWFBgSFBUU/9sAQwEDBAQFBAUJBQUJFA0LDRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU/8AAEQgAPAA8AwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8A+t8CjFJ+VH5UALgUYFavh3w1e+JrwwWiDavMkr8Ig9z/AEr0S1+DenrEBc31zJJjkxBUH5EGgDybAowK7/xF8JrmwgefTZzeooyYXXEmPbHB+nFcAQQcHg+lABgUYFJ+VH5UALn3oz70fjRzQB734F0iPR/DNkigCSZBNK3cswz+gwPwrfz71jeDdTTVfDOnzI2SsSxuPRlGD/LP41tc0AJn3rxX4o6RHpfiUywgJHdJ5xAHAbJDfyz+Ne1814z8WdTS98SJBG24WsQRiP7xJJH6igDis+9Gfej8aPx/SgA/Oj86MfWux+HPg1fEV611dqTYW5GV/wCej9dv07n8PWgDS+F1nr0E5ntowulyn959oJVX90759+ler/nSJGI0VFUKqjAVeABTsGgDM8Q/2odMlGkCL7WRgGY4wPbtn68V4BqVrdWd7NFexyx3QYlxL94k9/fPrX0lj61z3jLwjB4p05lwEvYwTDN3B/un2NAHgv50fnT54JLaaSGVGSSNirKeoI4IpmPrQAfhX0J4T0hdE8PWVqFw4jDSe7nk/qf0rwGxjWS9t1YZVpFBH419K4FACY9qMe1GKMUAGPajHtRjrRigDxv4s6Qtj4hjukXCXce44/vjg/pj864nHtXqnxmjU2WmPj5hI4B+oH+FeVgAigD/2Q==" alt="Generisk avatar" width="60" height="60">
+                        {% endif %}
+                        <p><a href="{{ comment.url|default('#') }}">{{ comment.name|default('Anonym') }}</a>, <time datetime="{{ comment.date }}T{{ comment.time }}Z+01:00">{{ comment.date_time.strftime("%d ") ~ swedish_months[comment.date_time.month-1] ~ comment.date_time.strftime(" %Y,") ~ comment.date_time.strftime(" %H:%M") }}</time><p>
+                        </div>
+                        <p>{{ comment.body }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            {% endif %}
+            <div style="float: left" class="comment-form">
+                <h1>Lämna en kommentar</h1>
+                <form id="comment-form" action="http://comment.publishme.se/" name="commentForm" method="post" onsubmit="doSubmit(this)">
+                    <input type="hidden" name="commentid" value="{{ blog.site_id }};{{ entry.id }}">
+
+                    <label for="author">Namn:</label><br>
+                    <input type="text" id="author" name="author" onchange="doChange(this)" value="" size="42" maxlength="255">
+
+                    <input name="remember" onclick="doCheck(this)" type="checkbox" value="1" id="remember">
+                    <label for="remember">Kom ihåg mig?</label>
+                    <br>
+
+                    <label for="email">E-postadress: (publiceras ej)</label>
+                    <br>
+                    <input type="email" id="email" name="email" onchange="doChange(this)" value="" size="42" maxlength="255">
+                    <br>
+
+                    <label for="url">URL/Bloggadress:</label>
+                    <br>
+                    <input type="text" id="url" name="url" onchange="doChange(this)" value="http://" size="42" maxlength="255">
+                    <br>
+
+                    <label for="message">Kommentar:</label>
+                    <br>
+                    <textarea name="content" id="message" onchange="doChange(this)" cols="52" rows="7"></textarea>
+                    <br>
+
+                    <input class="formbutton" type="submit" name="submit" value="Skicka kommentar">
+                </form>
+            </div>
+        </section>
+        {% endif%}
+
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.3/jquery.fancybox.pack.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/0.11.4/jquery.timeago.js"></script>
+    <script>
+    $(document).ready(function() {
+        function getTextFromFirstChild(el) {
+            return $(el).contents(":not(:empty)").first().text();
+        }
+
+//Ingresser
+$('.post .text').each(function(i, el) {
+    $(el).contents(":not(:empty)").first().css({
+        'fontSize' : '20px',
+        'fontStyle' : 'italic',
+        'color' : '#000'
+    });
+});
+
+//Förbered data-attribut för Fancybox
+$('.post').each(function(i, post) {
+    $(post).find('a>img').each(function(i, img) {
+        $(img).parent().attr('rel', $(post).attr('id'));
+    })
+});
+
+// Fancybox
+$('.post a[href*=".jpg"], .post a[href*=".png"], .post a[href*=".gif"], .post a[href*=".jpeg"]').fancybox({
+    padding : 0,
+    aspectRatio: true,
+    openEffect: 'elastic',
+    closeEffect: 'elastic'
+});
+
+// Länkar och kategorier
+$('.collapsible').click(function() {
+    var $obj = $(this).children('ul, ol');
+    var $parent = $(this);
+    if ($obj.is(':visible')) {
+        $obj.slideToggle('fast', function() {
+            $parent.attr('data-indicator', '+')
+        });
+        return;
+    }
+    $('.collapsible>ul, .collapsible>ol').each(function(i, el) {
+        var $el = $(el);
+        if ($el.is(':visible')) {
+            $el.slideToggle('fast', function() {
+                $el.parent().attr('data-indicator', '+')
+            });
+        }
+    });
+    $obj.slideToggle('fast', function() {
+        $parent.attr('data-indicator', '-')
+    });
+});
+
+//Smooth scrolling
+function filterPath(string) {
+    return string
+    .replace(/^\//,'')
+    .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
+    .replace(/\/$/,'');
+}
+var locationPath = filterPath(location.pathname);
+var scrollElem = scrollableElement('html', 'body');
+
+$('a[href*=#]').each(function() {
+    var thisPath = filterPath(this.pathname) || locationPath;
+    if (locationPath == thisPath
+        && (location.hostname == this.hostname || !this.hostname)
+        && this.hash.replace(/#/,'') ) {
+        var $target = $(this.hash), target = this.hash;
+    if (target) {
+        var targetOffset = $target.offset().top;
+        $(this).click(function(event) {
+            event.preventDefault();
+            $(scrollElem).animate({scrollTop: targetOffset}, 400, function() {
+                location.hash = target;
+            });
+        });
+    }
+}
+});
+
+// use the first element that is "scrollable"
+function scrollableElement(els) {
+    for (var i = 0, argLength = arguments.length; i <argLength; i++) {
+        var el = arguments[i],
+        $scrollElement = $(el);
+        if ($scrollElement.scrollTop()> 0) {
+            return el;
+        } else {
+            $scrollElement.scrollTop(1);
+            var isScrollable = $scrollElement.scrollTop()> 0;
+            $scrollElement.scrollTop(0);
+            if (isScrollable) {
+                return el;
+            }
+        }
+    }
+    return [];
+}
+
+//Fuzzy date
+jQuery.timeago.settings.strings = {
+    prefixAgo: "skrev för",
+    prefixFromNow: "om",
+    suffixAgo: "sedan:",
+    suffixFromNow: "",
+    seconds: "mindre än en minut",
+    minute: "ungefär en minut",
+    minutes: "%d minuter",
+    hour: "ungefär en timme",
+    hours: "ungefär %d timmar",
+    day: "en dag",
+    days: "%d dagar",
+    month: "ungefär en månad",
+    months: "%d månader",
+    year: "ungefär ett år",
+    years: "%d år"
+};
+$('#comments-area time').timeago();
+
+});
+</script>
+<script src="http://blogg-design.se/static/drm.php?url=gratis-bloggdesign-kolonn"></script>
+
+<img src="http://stats.blogg.se/?id={{ blog.site_id }}" border="0" width="0" height="0" alt="" />
+
+
+<script src='http://static.blogg.se/public/js/footer.js?id={{ blog.id }}' type='text/javascript'></script>
+<script type="text/javascript" src="http://static.blogg.se/public/js/script_blogg.js"></script>
+<script type="text/javascript" src="http://static.blogg.se/shared/js/script.js"></script>
+<script type="text/javascript" src="http://static.blogg.se/shared/js/comments.js"></script>
+</body>
+</html>

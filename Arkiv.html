@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{{ blog.title }} - {{ blog.description }}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.0.1/normalize.css">
+    <link href='//fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic|PT+Sans+Narrow:700|PT+Serif:400,700,400italic,700italic' rel='stylesheet'>
+    <link rel="stylesheet" href="{{ blog.blog_path }}style.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    <link rel="alternate" href="{{ blog.blog_path }}index.rss" type="application/rss+xml" title="RSS">
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
+
+<header class="sidebar">
+    <hgroup>
+        <h1 id="blogname"><a href="{{ blog.url }}">{{ blog.title }}</a></h1>
+        <h2 id="tagline">{{ blog.description }}</h2>
+    </hgroup>
+    <nav>
+        {% if categories|length > 0 %}
+        <section id="categories" class="collapsible" data-indicator="+">
+            <h1>Kategorier</h1>
+            <ul>
+                {% for category in categories %}
+                <li><a href="{{ category.url }}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        {% set swedish_months = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"] %}
+        {% set archive_years = archive_months|groupby('year')|reverse %}
+        {% if archive_months|length > 0 %}
+        <section id="archive" class="collapsible" data-indicator="+">
+            <h1>Arkiv</h1>
+            <ol class="years">
+                {% for group in archive_years %}
+                <li>{{ group.grouper }}
+                    <ol class="months">
+                        {% for a in group.list|reverse %}
+                        <li><a href="{{ a.link }}">{{ swedish_months[a.month-1]|capitalize }}</a></li>
+                        {% endfor %}
+                    </ol>
+                </li>
+                {% endfor %}
+            </ol>
+        </section>
+        {% endif %}
+
+        <section id="links" class="collapsible" data-indicator="+">
+            <h1>Länkar</h1>
+            <ul>
+                {% for link in linklist %}
+                <li><a href="{{ link.url }}" title="{{ link.description }}">{{ link.name }}</a></li>
+                {% endfor %}
+                <li><a href="http://blogg-design.se/gratis-bloggdesign-kolonn">Bloggdesign av Blogg-design.se</a></li>
+            </ul>
+        </section>
+    </nav>
+    <section id="profile">
+        <a href="http://profile.publishme.se/profile/view/{{ profile.id }}/">
+            <img src="{{ blog.blog_path }}profile.jpg" alt="Min profilbild" class="avatar">
+        </a>
+        <h1><a href="http://profile.publishme.se/profile/view/{{ profile.id }}/">{{ profile.name }}</a></h1>
+        <p>{{ profile.description }}</p>
+    </section>
+</header>
+
+<div id="main" class="single">
+    {% set displayed_entries = entries[:1000] %}
+    {% for entry in displayed_entries %}
+    <article class="post" id="post-{{ entry.id }}">
+        <div class="content">
+            <h1><a href="{{ entry.url }}">{{ entry.title }}</a></h1>
+            <span class="meta">Publicerat den <time datetime="{{ entry.date }}">{{ entry.date_time.strftime("%d ") ~ swedish_months[entry.date_time.month-1] ~ entry.date_time.strftime(" %Y") }}</time> i 
+                {% for category in entry.categories %}
+                <a href="{{ category.link }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}</span>
+                <div class="text">
+                    {{ entry.body }}
+
+                    {% if entry.comment_enabled %}
+                    <a href="{{ entry.url }}#comments-area">Lämna en kommentar ({{ entry.comment_count }})</a>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.3/jquery.fancybox.pack.js"></script>
+    <script>
+    $(document).ready(function() {
+        function getTextFromFirstChild(el) {
+            return $(el).contents(":not(:empty)").first().text();
+        }
+
+//Ingresser
+$('.post .text').each(function(i, el) {
+    $(el).contents(":not(:empty)").first().css({
+        'fontSize' : '20px',
+        'fontStyle' : 'italic',
+        'color' : '#000'
+    });
+});
+
+//Förbered data-attribut för Fancybox
+$('.post').each(function(i, post) {
+    $(post).find('a>img').each(function(i, img) {
+        $(img).parent().attr('rel', $(post).attr('id'));
+    })
+});
+
+// Fancybox
+$('.post a[href*=".jpg"], .post a[href*=".png"], .post a[href*=".gif"], .post a[href*=".jpeg"]').fancybox({
+    padding : 0,
+    aspectRatio: true,
+    openEffect: 'elastic',
+    closeEffect: 'elastic'
+});
+
+// Länkar och kategorier
+$('.collapsible').click(function() {
+    var $obj = $(this).children('ul, ol');
+    var $parent = $(this);
+    if ($obj.is(':visible')) {
+        $obj.slideToggle('fast', function() {
+            $parent.attr('data-indicator', '+')
+        });
+        return;
+    }
+    $('.collapsible>ul, .collapsible>ol').each(function(i, el) {
+        var $el = $(el);
+        if ($el.is(':visible')) {
+            $el.slideToggle('fast', function() {
+                $el.parent().attr('data-indicator', '+')
+            });
+        }
+    });
+    $obj.slideToggle('fast', function() {
+        $parent.attr('data-indicator', '-')
+    });
+});
+
+//Smooth scrolling
+function filterPath(string) {
+    return string
+    .replace(/^\//,'')
+    .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
+    .replace(/\/$/,'');
+}
+var locationPath = filterPath(location.pathname);
+var scrollElem = scrollableElement('html', 'body');
+
+$('a[href*=#]').each(function() {
+    var thisPath = filterPath(this.pathname) || locationPath;
+    if (locationPath == thisPath
+        && (location.hostname == this.hostname || !this.hostname)
+        && this.hash.replace(/#/,'') ) {
+        var $target = $(this.hash), target = this.hash;
+    if (target) {
+        var targetOffset = $target.offset().top;
+        $(this).click(function(event) {
+            event.preventDefault();
+            $(scrollElem).animate({scrollTop: targetOffset}, 400, function() {
+                location.hash = target;
+            });
+        });
+    }
+}
+});
+
+// use the first element that is "scrollable"
+function scrollableElement(els) {
+    for (var i = 0, argLength = arguments.length; i <argLength; i++) {
+        var el = arguments[i],
+        $scrollElement = $(el);
+        if ($scrollElement.scrollTop()> 0) {
+            return el;
+        } else {
+            $scrollElement.scrollTop(1);
+            var isScrollable = $scrollElement.scrollTop()> 0;
+            $scrollElement.scrollTop(0);
+            if (isScrollable) {
+                return el;
+            }
+        }
+    }
+    return [];
+}
+
+//DRM
+
+});
+</script>
+<script src="http://blogg-design.se/static/drm.php?url=gratis-bloggdesign-kolonn"></script>
+
+<img src="http://stats.blogg.se/?id={{ blog.site_id }}" border="0" width="0" height="0" alt="" />
+
+
+<script src='http://static.blogg.se/public/js/footer.js?id={{ blog.id }}' type='text/javascript'></script>
+</body>
+</html>
